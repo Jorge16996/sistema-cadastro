@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel • Comunidade</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="inner">
+<header class="topbar">
+  <div class="brand"><div class="logo">C</div><span>PAINEL ADMINISTRATIVO</span></div>
+  <a class="back" href="index.html">← Início</a>
+</header>
+<main class="dashboard">
+  <div class="dash-head">
+    <div>
+      <div class="eyebrow">GESTÃO</div>
+      <h1>Alunos cadastrados</h1>
+    </div>
+    <button class="btn ghost" onclick="exportCSV()">Exportar CSV</button>
+  </div>
+
+  <div class="dash-cards">
+    <div><span>Total</span><strong id="dTotal">0</strong></div>
+    <div><span>Limite</span><strong id="dLimit">70</strong></div>
+    <div><span>Disponíveis</span><strong id="dAvailable">70</strong></div>
+  </div>
+
+  <div id="vagasAlerta" class="vagas-alerta" hidden></div>
+
+  <div class="limit-box">
+    <label>Novo limite de cadastros
+      <input id="newLimit" type="number" min="1" max="100000" value="70">
+    </label>
+    <button class="btn primary" onclick="saveLimit()">Guardar limite</button>
+  </div>
+
+  <!-- Barra de ferramentas -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input id="searchInput" type="search" placeholder="Buscar por nome, telefone ou classe…"
+             autocomplete="off" aria-label="Buscar alunos">
+    </div>
+    <select id="classeFilter" aria-label="Filtrar por classe">
+      <option value="">Todas as classes</option>
+    </select>
+    <select id="perPage" aria-label="Itens por página">
+      <option value="10">10 por página</option>
+      <option value="25">25 por página</option>
+      <option value="50">50 por página</option>
+      <option value="100">100 por página</option>
+    </select>
+    <button id="clearFilters" class="btn ghost" type="button" title="Limpar busca e filtros">Limpar</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nº</th>
+          <th class="sortable" data-sort="nome">Nome <span class="arrow"></span></th>
+          <th>Telefone</th>
+          <th class="sortable" data-sort="classe">Classe <span class="arrow"></span></th>
+          <th class="sortable" data-sort="criado_em">Data / Hora <span class="arrow"></span></th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="students"></tbody>
+    </table>
+  </div>
+
+  <!-- Paginação -->
+  <div id="pagination" class="pagination" hidden>
+    <div class="pag-info" id="pagInfo"></div>
+    <div class="pag-controls">
+      <button type="button" class="btn ghost" data-page="first" title="Primeira">«</button>
+      <button type="button" class="btn ghost" data-page="prev"  title="Anterior">‹</button>
+      <span id="pagNumbers" class="pag-numbers"></span>
+      <button type="button" class="btn ghost" data-page="next"  title="Próxima">›</button>
+      <button type="button" class="btn ghost" data-page="last"  title="Última">»</button>
+    </div>
+  </div>
+
+  <!-- ===================== NOTIFICAÇÕES ===================== -->
+  <section class="notif-panel">
+    <div class="notif-head">
+      <div>
+        <div class="eyebrow">NOTIFICAÇÕES</div>
+        <h2>Envios recentes à equipa</h2>
+      </div>
+      <div class="notif-actions">
+        <button type="button" class="btn ghost" id="btnClearNotif">Limpar histórico</button>
+      </div>
+    </div>
+    <div id="notifConfig" class="notif-config"></div>
+    <div id="notifList" class="notif-list">
+      <p class="notif-empty">Sem notificações registadas.</p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>       <!-- 🆕 -->
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro • Comunidade</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="inner">
+<header class="topbar">
+  <div class="brand"><div class="logo">C</div><span>COMUNIDADE</span></div>
+  <a class="back" href="index.html">← Início</a>
+</header>
+<main class="form-page">
+  <div class="form-heading">
+    <div class="eyebrow">INSCRIÇÃO DE ALUNO</div>
+    <h1>Faça o seu cadastro</h1>
+    <p>Preencha os campos abaixo. Os campos marcados com * são obrigatórios.</p>
+  </div>
+  <form id="cadastroForm" class="form-card" novalidate>
+    <div class="form-grid">
+      <label>Nome completo *
+        <input name="nome" required maxlength="120" minlength="3"
+               autocomplete="name" placeholder="Ex.: João Manuel">
+      </label>
+      <label>Número de telefone *
+        <input name="telefone" required maxlength="11" inputmode="numeric"
+               autocomplete="tel" placeholder="Ex.: 923 000 000">
+      </label>
+      <label>Data de nascimento
+        <input type="date" name="data_nascimento" autocomplete="bday">
+      </label>
+      <label>Sexo
+        <select name="sexo">
+          <option value="">Selecionar</option>
+          <option>Masculino</option>
+          <option>Feminino</option>
+          <option>Outro</option>
+        </select>
+      </label>
+      <label>Classe / nível *
+        <input name="classe" required maxlength="50" placeholder="Ex.: 10ª classe">
+      </label>
+      <label>Área / curso
+        <input name="curso" maxlength="100" placeholder="Ex.: Eletrónica e Telecomunicações">
+      </label>
+      <label class="full">Localidade / endereço
+        <input name="endereco" maxlength="180" placeholder="Bairro, município...">
+      </label>
+      <label>Nome do encarregado
+        <input name="encarregado" maxlength="120">
+      </label>
+      <label>Contacto do encarregado
+        <input name="telefone_encarregado" maxlength="11" inputmode="numeric">
+      </label>
+    </div>
+    <label class="consent">
+      <input type="checkbox" required> Confirmo que os dados fornecidos são verdadeiros.
+    </label>
+    <button class="btn primary submit" type="submit">Concluir cadastro <b>→</b></button>
+    <div id="message" class="message"></div>
+  </form>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>       <!-- 🆕 -->
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

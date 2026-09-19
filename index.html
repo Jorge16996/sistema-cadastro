@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidade • Cadastro de Alunos</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="bg-animation"><span></span><span></span><span></span><span></span></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" id="secretLogo" aria-label="Comunidade">C</div>
+      <span>COMUNIDADE</span>
+    </div>
+    <!-- Área administrativa oculta — acessível com 5 cliques no logo ou Ctrl+Shift+A -->
+  </header>
+
+  <main class="hero">
+    <section class="hero-content">
+      <div class="eyebrow fade-up">SISTEMA DE GESTÃO DE ALUNOS</div>
+      <h1 class="fade-up delay-1">
+        Seja <span class="animated-gradient">bem-vindo</span><br>
+        à nossa comunidade.
+      </h1>
+      <p class="fade-up delay-2">
+        Faça o seu cadastro de forma simples, rápida e segura. Os seus dados serão
+        registados para facilitar a gestão e o acompanhamento dos alunos.
+      </p>
+      <div class="actions fade-up delay-3">
+        <a id="btnCadastro" class="btn primary pulse" href="cadastro.html">Cadastrar-se <b>→</b></a>
+        <a class="btn ghost" href="#sobre">Conhecer o sistema</a>
+      </div>
+      <div class="stats fade-up delay-4">
+        <div><strong id="total">0</strong><small>Alunos cadastrados</small></div>
+        <div><strong id="limite">70</strong><small>Limite de cadastros</small></div>
+        <div><strong id="vagas">70</strong><small>Vagas disponíveis</small></div>
+      </div>
+
+      <div class="vagas-progress fade-up delay-5" aria-label="Ocupação de vagas">
+        <div class="vagas-bar"><span id="vagasBar"></span></div>
+      </div>
+      <div id="vagasAlerta" class="vagas-alerta" hidden></div>
+    </section>
+
+    <div class="hero-card fade-up delay-2">
+      <div class="pulse"></div>
+      <div class="card-icon">✓</div>
+      <h3>Cadastro digital</h3>
+      <p>Faça o seu cadastro digital na comunidade para que os seus dados sejam guardados com mais segurança.</p>
+      <div class="mini-line"><span></span><span></span><span></span></div>
+    </div>
+  </main>
+
+  <!-- ===================== SOBRE / CONHEÇA O SISTEMA ===================== -->
+  <section id="sobre" class="info">
+    <div class="section-head reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        A NOSSA COMUNIDADE
+      </div>
+      <h2>
+        Um projeto pensado para <span class="grad-text">ensinar e orientar</span>
+      </h2>
+      <p class="section-sub">
+        Orientamos novos alunos com método, prática e acompanhamento próximo — do primeiro
+        circuito à compreensão plena da electrónica e das telecomunicações.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <div class="about-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          Eletrónica &amp; Telecomunicações
+        </div>
+
+        <p>
+          A nossa comunidade foi criada com a finalidade de <strong>ensinar e orientar alunos novos</strong>
+          no curso de <strong>Eletrónica e Telecomunicações</strong>, transmitindo os fundamentos
+          essenciais da área de forma clara, prática e acessível.
+        </p>
+        <p>
+          Aqui, cada novo aluno encontra apoio, orientação e material de estudo para construir
+          uma base sólida — desde os primeiros circuitos até aos conceitos mais avançados de
+          telecomunicações. Queremos que ninguém se sinta perdido ao dar os primeiros passos
+          neste mundo fascinante da eletrónica.
+        </p>
+
+        <div class="about-highlights">
+          <div class="highlight-item">
+            <strong>+10</strong>
+            <span>Alunos orientados</span>
+          </div>
+          <div class="highlight-item">
+            <strong>100%</strong>
+            <span>Suporte contínuo</span>
+          </div>
+          <div class="highlight-item">
+            <strong>24/7</strong>
+            <span>Comunidade ativa</span>
+          </div>
+        </div>
+      </div>
+
+      <ul class="about-features reveal">
+        <li class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-head">
+              <strong>Ensino orientado</strong>
+              <span class="feature-tag">Base sólida</span>
+            </div>
+            <p>Aulas e explicações passo a passo para quem está a começar do zero, sem pressa e com clareza.</p>
+          </div>
+        </li>
+
+        <li class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-head">
+              <strong>Prática &amp; fundamentos</strong>
+              <span class="feature-tag">Mão na massa</span>
+            </div>
+            <p>Eletrónica básica, circuitos, medições e telecomunicações — teoria que se torna prática.</p>
+          </div>
+        </li>
+
+        <li class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-head">
+              <strong>Comunidade ativa</strong>
+              <span class="feature-tag">Sempre perto</span>
+            </div>
+            <p>Apoio contínuo, troca de conhecimento e orientadores disponíveis para tirar dúvidas.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== CRIADORES ===================== -->
+  <section id="criadores" class="creators">
+    <div class="section-head reveal">
+      <div class="eyebrow">CRIADORES DA COMUNIDADE</div>
+      <h2>Quem está por trás do projeto</h2>
+    </div>
+
+    <div class="creators-grid">
+
+      <article class="creator-card reveal">
+        <div class="creator-avatar" aria-hidden="true">EC</div>
+        <div class="creator-body">
+          <h3>Elizandra Carla Massango</h3>
+          <span class="creator-role">CEO da Comunidade</span>
+          <p class="creator-bio">
+            Fundadora e líder da comunidade. Responsável pela visão, organização e pelo
+            acompanhamento geral dos alunos que ingressam no curso de Eletrónica e Telecomunicações.
+          </p>
+          <a class="creator-whatsapp"
+             href="https://wa.me/244922661537"
+             target="_blank" rel="noopener"
+             aria-label="Falar com Elizandra no WhatsApp">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.52 3.48A11.9 11.9 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.3-1.65a11.9 11.9 0 0 0 5.76 1.47h.01c6.56 0 11.9-5.34 11.9-11.9 0-3.18-1.24-6.17-3.45-8.44zM12.07 21.5h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.27c0-5.45 4.43-9.88 9.9-9.88 2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.9 6.99c0 5.45-4.44 9.89-9.87 9.89zm5.43-7.1c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17c-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.88 1.21 3.08.15.2 2.09 3.2 5.06 4.49.71.3 1.26.49 1.69.63.71.23 1.36.19 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35z"/>
+            </svg>
+            <span>+244 922 661 537</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="creator-card reveal">
+        <div class="creator-avatar" aria-hidden="true">JL</div>
+        <div class="creator-body">
+          <h3>Jorge Ernesto Lucala</h3>
+          <span class="creator-role">Sub-CEO • Orientador</span>
+          <p class="creator-bio">
+            Orientador técnico e pedagógico. Responsável por acompanhar os novos alunos,
+            tirar dúvidas e garantir que os fundamentos da eletrónica sejam bem compreendidos.
+          </p>
+          <a class="creator-whatsapp"
+             href="https://wa.me/244930513833"
+             target="_blank" rel="noopener"
+             aria-label="Falar com Jorge no WhatsApp">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.52 3.48A11.9 11.9 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.3-1.65a11.9 11.9 0 0 0 5.76 1.47h.01c6.56 0 11.9-5.34 11.9-11.9 0-3.18-1.24-6.17-3.45-8.44zM12.07 21.5h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.27c0-5.45 4.43-9.88 9.9-9.88 2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.9 6.99c0 5.45-4.44 9.89-9.87 9.89zm5.43-7.1c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17c-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.88 1.21 3.08.15.2 2.09 3.2 5.06 4.49.71.3 1.26.49 1.69.63.71.23 1.36.19 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35z"/>
+            </svg>
+            <span>+244 930 513 833</span>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <div class="logo">C</div>
+          <div>
+            <strong>Comunidade</strong>
+            <p>Ensinar, orientar e crescer juntos na Eletrónica e Telecomunicações.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Comunidade</h4>
+        <a class="footer-link" href="https://chat.whatsapp.com/XXXXXXXXXXXXXXX"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+            <path d="M20.52 3.48A11.9 11.9 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.3-1.65a11.9 11.9 0 0 0 5.76 1.47h.01c6.56 0 11.9-5.34 11.9-11.9 0-3.18-1.24-6.17-3.45-8.44zM12.07 21.5h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.27c0-5.45 4.43-9.88 9.9-9.88 2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.9 6.99c0 5.45-4.44 9.89-9.87 9.89zm5.43-7.1c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17c-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.88 1.21 3.08.15.2 2.09 3.2 5.06 4.49.71.3 1.26.49 1.69.63.71.23 1.36.19 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35z"/>
+          </svg>
+          Entrar no grupo
+        </a>
+        <a class="footer-link" href="cadastro.html">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          Fazer cadastro
+        </a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Sistema</h4>
+        <p class="footer-note">
+          Criado por <strong>Jorge Ernesto Lucala</strong><br>
+          <small>Desenvolvimento e manutenção</small>
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year">2025</span> Comunidade • Todos os direitos reservados.</span>
+    </div>
+  </footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>       <!-- 🆕 -->
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
