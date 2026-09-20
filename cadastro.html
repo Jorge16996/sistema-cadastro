@@ -55,7 +55,7 @@
       </label>
     </div>
 
-    <!-- ===================== PAGAMENTO ===================== -->
+    <!-- PAGAMENTO -->
     <div class="payment-block">
       <div class="payment-question">
         Já fizeste o pagamento? <span class="req">*</span>
@@ -84,7 +84,6 @@
              placeholder="Ex.: 5000" inputmode="decimal">
       <small class="field-hint">Insere o valor exato em kwanzas.</small>
     </label>
-    <!-- ===================== FIM PAGAMENTO ===================== -->
 
     <label class="consent">
       <input type="checkbox" required> Confirmo que os dados fornecidos são verdadeiros.
@@ -93,6 +92,27 @@
     <div id="message" class="message"></div>
   </form>
 </main>
+
+<!-- ===================== NETLIFY FORMS (oculto) ===================== -->
+<!-- Este formulário é invisível. Serve só para o Netlify detetar os campos
+     durante o build e ativar o processamento das submissões. -->
+<form name="cadastro-aluno" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="bot-field">
+  <input type="text" name="nome">
+  <input type="text" name="telefone">
+  <input type="text" name="data_nascimento">
+  <input type="text" name="sexo">
+  <input type="text" name="classe">
+  <input type="text" name="curso">
+  <input type="text" name="endereco">
+  <input type="text" name="encarregado">
+  <input type="text" name="telefone_encarregado">
+  <input type="text" name="pagamento_feito">
+  <input type="text" name="valor_pagamento">
+  <input type="text" name="numero_cadastro">
+  <input type="text" name="criado_em">
+</form>
+
 <script src="assets/js/config.js"></script>
 <script src="assets/js/firebase-sync.js"></script>
 <script src="assets/js/notifications.js"></script>

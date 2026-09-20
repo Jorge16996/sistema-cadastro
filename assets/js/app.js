@@ -1,7 +1,8 @@
 /* =========================================================
-   app.js — Sistema de Cadastro de Alunos (v11)
+   app.js — Sistema de Cadastro de Alunos (v12)
    localStorage + pagamento + comprovativo WhatsApp
-   + sincronização do contador via Firebase (opcional)
+   + Firebase (contador em tempo real)
+   + Netlify Forms (backup online)
    ========================================================= */
 
 const KEY = "comunidade_alunos_v1";
@@ -11,6 +12,7 @@ const DEFAULT_LIMIT = 70;
 const MAX_LIMIT = 100000;
 const MIN_IDADE = 3;
 const MAX_IDADE = 120;
+const NETLIFY_FORM_NAME = "cadastro-aluno";
 
 /* =========================================================
    GUARDA ADMIN
@@ -174,7 +176,7 @@ function migrate() {
 }
 
 /* =========================================================
-   RENDER DOS NÚMEROS (separado para permitir Firebase)
+   RENDER DOS NÚMEROS
    ========================================================= */
 function renderStatsUI(total, limite) {
   const v = Math.max(0, limite - total);
@@ -241,15 +243,26 @@ function renderStatsUI(total, limite) {
 function refreshStats() {
   const n = getStudents().length;
   const l = getLimit();
+
+  /* Render local imediato */
   renderStatsUI(n, l);
 
-  /* 🔄 Firebase — subscreve UMA vez para sincronizar o contador */
+  /* 🔄 Firebase — subscreve UMA vez */
   if (typeof fbSubscreverContador === "function" && !refreshStats._fbSetup) {
     refreshStats._fbSetup = true;
     fbSubscreverContador((totalOnline) => {
-      // Firebase é a fonte da verdade quando disponível
       renderStatsUI(totalOnline, getLimit());
     }).catch((err) => console.warn("Firebase offline:", err.message));
+  }
+
+  /* 🔄 Firebase — subscreve limite UMA vez */
+  if (typeof fbSubscreverLimite === "function" && !refreshStats._fbLimitSetup) {
+    refreshStats._fbLimitSetup = true;
+    fbSubscreverLimite((limiteOnline) => {
+      localStorage.setItem(LIMIT_KEY, String(limiteOnline));
+      const nl = document.getElementById("newLimit");
+      if (nl) nl.value = limiteOnline;
+    }).catch(() => {});
   }
 
   const nl = document.getElementById("newLimit");
@@ -270,7 +283,7 @@ function saveLimit() {
   }
   localStorage.setItem(LIMIT_KEY, String(n));
 
-  /* 🔄 Firebase: publica o novo limite */
+  /* 🔄 Firebase: publica novo limite */
   if (typeof fbGravarLimite === "function") {
     fbGravarLimite(n).catch((err) => console.warn("Firebase (limite):", err.message));
   }
@@ -428,7 +441,7 @@ function removeStudent(id) {
   a.splice(idx, 1);
   saveStudents(a);
 
-  /* 🔄 Firebase: decrementa o contador */
+  /* 🔄 Firebase: decrementa */
   if (typeof fbDecrementar === "function") {
     fbDecrementar().catch((err) => console.warn("Firebase:", err.message));
   }
@@ -470,6 +483,45 @@ function exportCSV() {
   aEl.click();
   aEl.remove();
   URL.revokeObjectURL(url);
+}
+
+/* =========================================================
+   NETLIFY FORMS — backup online
+   ========================================================= */
+function enviarParaNetlify(aluno, numero) {
+  try {
+    const dados = {
+      "form-name": NETLIFY_FORM_NAME,
+      nome: aluno.nome || "",
+      telefone: aluno.telefone || "",
+      data_nascimento: aluno.data_nascimento || "",
+      sexo: aluno.sexo || "",
+      classe: aluno.classe || "",
+      curso: aluno.curso || "",
+      endereco: aluno.endereco || "",
+      encarregado: aluno.encarregado || "",
+      telefone_encarregado: aluno.telefone_encarregado || "",
+      pagamento_feito: aluno.pagamento_feito || "nao",
+      valor_pagamento: aluno.valor_pagamento != null ? String(aluno.valor_pagamento) : "",
+      numero_cadastro: numero,
+      criado_em: aluno.criado_em || new Date().toISOString()
+    };
+
+    const body = new URLSearchParams(dados).toString();
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body
+    })
+    .then((r) => {
+      if (r.ok) console.info("✅ Backup Netlify Forms enviado.");
+      else console.warn("Netlify Forms resposta:", r.status);
+    })
+    .catch((err) => console.warn("Netlify Forms falhou:", err));
+  } catch (err) {
+    console.warn("Netlify Forms erro:", err);
+  }
 }
 
 /* =========================================================
@@ -588,12 +640,17 @@ function setupCadastroForm() {
       latest.push(data);
       saveStudents(latest);
 
-      /* 🔄 Firebase: incrementa o contador global */
+      const numero = String(latest.length).padStart(3, "0");
+
+      /* 🔥 1. Firebase: incrementa contador global */
       if (typeof fbIncrementar === "function") {
         fbIncrementar().catch((err) => console.warn("Firebase:", err.message));
       }
 
-      const numero = String(latest.length).padStart(3, "0");
+      /* ☁️ 2. Netlify Forms: backup completo */
+      enviarParaNetlify(data, numero);
+
+      /* 📱 3. Mostra comprovativo ao aluno */
       const restam = Math.max(0, limit - latest.length);
       const restamTxt = restam === 0
         ? "⚠️ <strong>Última vaga preenchida.</strong>"
