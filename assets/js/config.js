@@ -1,6 +1,5 @@
 /* =========================================================
    config.js — Configuração do sistema
-   Edita apenas este ficheiro para ativar as notificações.
    ========================================================= */
 
 window.COMUNIDADE_CONFIG = {
@@ -8,12 +7,11 @@ window.COMUNIDADE_CONFIG = {
   /* ---------- Destinatários ---------- */
   destinatarios: {
     ceo: {
-      nome: "Elizandra Carla Massango",
+      nome: "Elizandra Carlos Massango",
       cargo: "CEO da Comunidade",
       whatsapp: "244922661537",
-      // Chave do CallMeBot (https://www.callmebot.com/blog/free-api-whatsapp-messages/)
       callmebotKey: "",
-      email: "massangoelizandramassango@gmail.com"   // ← preenche quando tiveres o e-mail da CEO
+      email: ""
     },
     subceo: {
       nome: "Jorge Ernesto Lucala",
@@ -24,9 +22,7 @@ window.COMUNIDADE_CONFIG = {
     }
   },
 
-  /* ---------- EmailJS ----------
-     Registo gratuito em https://www.emailjs.com/
-  */
+  /* ---------- EmailJS ---------- */
   emailjs: {
     publicKey: "",
     serviceId: "",

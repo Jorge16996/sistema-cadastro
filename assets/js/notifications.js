@@ -1,8 +1,5 @@
 /* =========================================================
-   notifications.js
-   Notificações à CEO e Sub-CEO quando um aluno se cadastra.
-   Canais: EmailJS (e-mail) + CallMeBot (WhatsApp).
-   Histórico visível no painel admin.
+   notifications.js — envio via browser (CallMeBot + EmailJS)
    ========================================================= */
 
 const NOTIF_LOG_KEY = "comunidade_notif_log_v1";
@@ -58,21 +55,41 @@ function buildMessageText(aluno, numero) {
   if (aluno.endereco) linhas.push(`📍 Endereço: ${aluno.endereco}`);
   if (aluno.encarregado) linhas.push(`👨‍👩‍👦 Encarregado: ${aluno.encarregado}`);
   if (aluno.telefone_encarregado) linhas.push(`📞 Contacto encarregado: ${aluno.telefone_encarregado}`);
-  linhas.push("", `🔢 Nº do cadastro: ${numero}`, `📅 ${new Date(aluno.criado_em).toLocaleString("pt-AO")}`, "", "— Sistema da Comunidade");
+
+  if (aluno.pagamento_feito === "sim") {
+    const v = Number(aluno.valor_pagamento);
+    const vtxt = Number.isFinite(v) && v > 0
+      ? v.toLocaleString("pt-AO") + " Kz"
+      : "—";
+    linhas.push("", `💰 Pagamento: *FEITO* — ${vtxt}`);
+  } else {
+    linhas.push("", "💰 Pagamento: *PENDENTE*");
+  }
+
+  linhas.push("");
+  linhas.push(`🔢 Nº do cadastro: ${numero}`);
+  linhas.push(`📅 ${new Date(aluno.criado_em).toLocaleString("pt-AO")}`);
+  linhas.push("");
+  linhas.push("— Sistema da Comunidade");
   return linhas.join("\n");
 }
-function buildEmailParams(aluno, numero, recipiente) {
+
+function buildEmailParams(aluno, numero, r) {
+  const pago = aluno.pagamento_feito === "sim";
+  const v = Number(aluno.valor_pagamento);
+  const valorTxt = pago && Number.isFinite(v) && v > 0
+    ? v.toLocaleString("pt-AO") + " Kz"
+    : "—";
+
   return {
-    to_name: recipiente.nome,
-    to_email: recipiente.email,
-    cargo: recipiente.cargo,
-    aluno_nome: aluno.nome,
-    aluno_telefone: aluno.telefone,
-    aluno_classe: aluno.classe,
-    aluno_curso: aluno.curso || "—",
+    to_name: r.nome, to_email: r.email, cargo: r.cargo,
+    aluno_nome: aluno.nome, aluno_telefone: aluno.telefone,
+    aluno_classe: aluno.classe, aluno_curso: aluno.curso || "—",
     aluno_endereco: aluno.endereco || "—",
     aluno_encarregado: aluno.encarregado || "—",
     aluno_telefone_encarregado: aluno.telefone_encarregado || "—",
+    pagamento_feito: pago ? "Sim" : "Não",
+    valor_pagamento: valorTxt,
     numero_cadastro: numero,
     data_cadastro: new Date(aluno.criado_em).toLocaleString("pt-AO"),
     mensagem: buildMessageText(aluno, numero)
@@ -94,21 +111,16 @@ function loadEmailJS() {
   });
   return _emailjsLoading;
 }
-async function sendEmail(aluno, numero, recipiente) {
+
+async function sendEmail(aluno, numero, r) {
   const cfg = window.COMUNIDADE_CONFIG?.emailjs || {};
-  if (!cfg.publicKey || !cfg.serviceId || !cfg.templateId) {
+  if (!cfg.publicKey || !cfg.serviceId || !cfg.templateId)
     return { ok: false, motivo: "EmailJS não configurado" };
-  }
-  if (!recipiente.email) {
-    return { ok: false, motivo: "Email do destinatário em falta" };
-  }
+  if (!r.email) return { ok: false, motivo: "Email em falta" };
 
   const logId = logNotif({
-    aluno_id: aluno.id,
-    aluno_nome: aluno.nome,
-    canal: "email",
-    destinatario: recipiente.nome,
-    contacto: recipiente.email,
+    aluno_id: aluno.id, aluno_nome: aluno.nome,
+    canal: "email", destinatario: r.nome, contacto: r.email,
     estado: "pendente"
   });
 
@@ -116,7 +128,7 @@ async function sendEmail(aluno, numero, recipiente) {
     await loadEmailJS();
     window.emailjs.init({ publicKey: cfg.publicKey });
     const res = await window.emailjs.send(cfg.serviceId, cfg.templateId,
-      buildEmailParams(aluno, numero, recipiente));
+      buildEmailParams(aluno, numero, r));
     updateNotif(logId, { estado: "enviado", detalhe: `HTTP ${res?.status || 200}` });
     return { ok: true };
   } catch (err) {
@@ -126,26 +138,22 @@ async function sendEmail(aluno, numero, recipiente) {
   }
 }
 
-/* ---------- CALLMEBOT (WhatsApp) ---------- */
-async function sendWhatsApp(aluno, numero, recipiente) {
-  if (!recipiente.whatsapp || !recipiente.callmebotKey) {
+/* ---------- CALLMEBOT ---------- */
+async function sendWhatsApp(aluno, numero, r) {
+  if (!r.whatsapp || !r.callmebotKey)
     return { ok: false, motivo: "WhatsApp/CallMeBot não configurado" };
-  }
 
   const logId = logNotif({
-    aluno_id: aluno.id,
-    aluno_nome: aluno.nome,
-    canal: "whatsapp",
-    destinatario: recipiente.nome,
-    contacto: recipiente.whatsapp,
+    aluno_id: aluno.id, aluno_nome: aluno.nome,
+    canal: "whatsapp", destinatario: r.nome, contacto: r.whatsapp,
     estado: "pendente"
   });
 
   const texto = buildMessageText(aluno, numero);
   const url = `https://api.callmebot.com/whatsapp.php`
-    + `?phone=${encodeURIComponent(recipiente.whatsapp)}`
+    + `?phone=${encodeURIComponent(r.whatsapp)}`
     + `&text=${encodeURIComponent(texto)}`
-    + `&apikey=${encodeURIComponent(recipiente.callmebotKey)}`;
+    + `&apikey=${encodeURIComponent(r.callmebotKey)}`;
 
   try {
     await fetch(url, { mode: "no-cors" });
@@ -158,28 +166,37 @@ async function sendWhatsApp(aluno, numero, recipiente) {
   }
 }
 
-/* ---------- FALLBACK MANUAL ---------- */
-function buildWhatsAppLink(recipiente, aluno, numero) {
-  const phone = String(recipiente.whatsapp || "").replace(/\D/g, "");
+/* ---------- FALLBACKS ---------- */
+function buildWhatsAppLink(r, aluno, numero) {
+  const phone = String(r.whatsapp || "").replace(/\D/g, "");
   const texto = buildMessageText(aluno, numero);
   return phone
     ? `https://wa.me/${phone}?text=${encodeURIComponent(texto)}`
     : `https://wa.me/?text=${encodeURIComponent(texto)}`;
 }
-function buildMailtoLink(recipiente, aluno, numero) {
+function buildMailtoLink(r, aluno, numero) {
   const assunto = `Novo aluno cadastrado — ${aluno.nome}`;
   const corpo = buildMessageText(aluno, numero);
-  return `mailto:${encodeURIComponent(recipiente.email || "")}`
+  return `mailto:${encodeURIComponent(r.email || "")}`
     + `?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+}
+function openWhatsAppManual(aluno, numero, quem) {
+  const cfg = window.COMUNIDADE_CONFIG?.destinatarios || {};
+  const r = quem === "subceo" ? cfg.subceo : cfg.ceo;
+  if (!r) return;
+  window.open(buildWhatsAppLink(r, aluno, numero), "_blank", "noopener");
+}
+function openEmailManual(aluno, numero, quem) {
+  const cfg = window.COMUNIDADE_CONFIG?.destinatarios || {};
+  const r = quem === "subceo" ? cfg.subceo : cfg.ceo;
+  if (!r) return;
+  window.location.href = buildMailtoLink(r, aluno, numero);
 }
 
 /* ---------- ORQUESTRADOR ---------- */
 async function sendNewStudentNotifications(aluno, numero) {
   const cfg = window.COMUNIDADE_CONFIG;
-  if (!cfg) {
-    console.warn("[Notif] config.js em falta — ignorado.");
-    return { enviados: 0, falhados: 0, resultados: [] };
-  }
+  if (!cfg) return { enviados: 0, falhados: 0, resultados: [] };
 
   const alvos = [cfg.destinatarios?.ceo, cfg.destinatarios?.subceo].filter(Boolean);
   const resultados = [];
@@ -198,24 +215,6 @@ async function sendNewStudentNotifications(aluno, numero) {
   const enviados = resultados.filter(x => x.ok).length;
   const falhados = resultados.filter(x => !x.ok).length;
   return { enviados, falhados, resultados };
-}
-
-/* =========================================================
-   ENVIO MANUAL (chamado pelo painel admin)
-   ========================================================= */
-
-
-function openWhatsAppManual(aluno, numero, quem) {
-  const cfg = window.COMUNIDADE_CONFIG?.destinatarios || {};
-  const r = quem === "subceo" ? cfg.subceo : cfg.ceo;
-  if (!r) return;
-  window.open(buildWhatsAppLink(r, aluno, numero), "_blank", "noopener");
-}
-function openEmailManual(aluno, numero, quem) {
-  const cfg = window.COMUNIDADE_CONFIG?.destinatarios || {};
-  const r = quem === "subceo" ? cfg.subceo : cfg.ceo;
-  if (!r) return;
-  window.location.href = buildMailtoLink(r, aluno, numero);
 }
 
 /* ---------- TOAST ---------- */
@@ -238,9 +237,7 @@ function showToast(msg, tipo = "info", dur = 3800) {
   }, dur);
 }
 
-/* =========================================================
-   RENDER DO PAINEL
-   ========================================================= */
+/* ---------- PAINEL ---------- */
 function renderNotifPanel() {
   const list = document.getElementById("notifList");
   const cfgBox = document.getElementById("notifConfig");
@@ -302,13 +299,12 @@ document.addEventListener("notif:updated", () => {
 
 /* ---------- EXPORTAR ---------- */
 window.sendNewStudentNotifications = sendNewStudentNotifications;
-
-window.openWhatsAppManual          = openWhatsAppManual;
-window.openEmailManual             = openEmailManual;
-window.buildWhatsAppLink           = buildWhatsAppLink;
-window.buildMailtoLink             = buildMailtoLink;
-window.buildMessageText            = buildMessageText;
-window.getNotifLog                 = getNotifLog;
-window.clearNotifLog               = clearNotifLog;
-window.renderNotifPanel            = renderNotifPanel;
-window.showToast                   = showToast;
+window.openWhatsAppManual = openWhatsAppManual;
+window.openEmailManual    = openEmailManual;
+window.buildWhatsAppLink  = buildWhatsAppLink;
+window.buildMailtoLink    = buildMailtoLink;
+window.buildMessageText   = buildMessageText;
+window.getNotifLog        = getNotifLog;
+window.clearNotifLog      = clearNotifLog;
+window.renderNotifPanel   = renderNotifPanel;
+window.showToast          = showToast;

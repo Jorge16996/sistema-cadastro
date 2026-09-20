@@ -54,6 +54,38 @@
         <input name="telefone_encarregado" maxlength="11" inputmode="numeric">
       </label>
     </div>
+
+    <!-- ===================== PAGAMENTO ===================== -->
+    <div class="payment-block">
+      <div class="payment-question">
+        Já fizeste o pagamento? <span class="req">*</span>
+      </div>
+      <div class="payment-options">
+        <label class="radio-option">
+          <input type="radio" name="pagamento_feito" value="sim" required>
+          <span class="radio-label">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Sim, já paguei
+          </span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="pagamento_feito" value="nao" required>
+          <span class="radio-label">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Não, ainda não
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <label id="valorPagamentoWrap" class="full valor-pagamento" hidden>
+      Valor do pagamento (Kz) *
+      <input name="valor_pagamento" type="number" min="1" step="0.01"
+             placeholder="Ex.: 5000" inputmode="decimal">
+      <small class="field-hint">Insere o valor exato em kwanzas.</small>
+    </label>
+    <!-- ===================== FIM PAGAMENTO ===================== -->
+
     <label class="consent">
       <input type="checkbox" required> Confirmo que os dados fornecidos são verdadeiros.
     </label>
@@ -62,7 +94,6 @@
   </form>
 </main>
 <script src="assets/js/config.js"></script>
-<script src="assets/js/api.js"></script>       <!-- 🆕 -->
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
