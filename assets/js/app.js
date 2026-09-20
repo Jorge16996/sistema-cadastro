@@ -1,6 +1,7 @@
 /* =========================================================
-   app.js — Sistema de Cadastro de Alunos (v10)
-   localStorage + pagamento + envio de comprovativo via WhatsApp
+   app.js — Sistema de Cadastro de Alunos (v11)
+   localStorage + pagamento + comprovativo WhatsApp
+   + sincronização do contador via Firebase (opcional)
    ========================================================= */
 
 const KEY = "comunidade_alunos_v1";
@@ -173,19 +174,17 @@ function migrate() {
 }
 
 /* =========================================================
-   ESTATÍSTICAS + VAGAS
+   RENDER DOS NÚMEROS (separado para permitir Firebase)
    ========================================================= */
-function refreshStats() {
-  const n = getStudents().length;
-  const l = getLimit();
-  const v = Math.max(0, l - n);
+function renderStatsUI(total, limite) {
+  const v = Math.max(0, limite - total);
   const lotado = v === 0;
-  const quaseCheio = !lotado && v <= Math.max(1, Math.floor(l * 0.10));
+  const quaseCheio = !lotado && v <= Math.max(1, Math.floor(limite * 0.10));
 
-  [["total", n], ["dTotal", n]].forEach(([id, val]) => {
+  [["total", total], ["dTotal", total]].forEach(([id, val]) => {
     const e = document.getElementById(id); if (e) e.textContent = val;
   });
-  [["limite", l], ["dLimit", l]].forEach(([id, val]) => {
+  [["limite", limite], ["dLimit", limite]].forEach(([id, val]) => {
     const e = document.getElementById(id); if (e) e.textContent = val;
   });
   [["vagas", v], ["dAvailable", v]].forEach(([id, val]) => {
@@ -194,7 +193,7 @@ function refreshStats() {
 
   const bar = document.getElementById("vagasBar");
   if (bar) {
-    const pct = l > 0 ? Math.min(100, (n / l) * 100) : 0;
+    const pct = limite > 0 ? Math.min(100, (total / limite) * 100) : 0;
     bar.style.width = pct + "%";
     bar.classList.toggle("warn", quaseCheio);
     bar.classList.toggle("full", lotado);
@@ -234,6 +233,24 @@ function refreshStats() {
       btnCadastro.setAttribute("href", "cadastro.html");
     }
   }
+}
+
+/* =========================================================
+   ESTATÍSTICAS + VAGAS
+   ========================================================= */
+function refreshStats() {
+  const n = getStudents().length;
+  const l = getLimit();
+  renderStatsUI(n, l);
+
+  /* 🔄 Firebase — subscreve UMA vez para sincronizar o contador */
+  if (typeof fbSubscreverContador === "function" && !refreshStats._fbSetup) {
+    refreshStats._fbSetup = true;
+    fbSubscreverContador((totalOnline) => {
+      // Firebase é a fonte da verdade quando disponível
+      renderStatsUI(totalOnline, getLimit());
+    }).catch((err) => console.warn("Firebase offline:", err.message));
+  }
 
   const nl = document.getElementById("newLimit");
   if (nl) { nl.value = l; nl.max = MAX_LIMIT; }
@@ -252,6 +269,12 @@ function saveLimit() {
     return;
   }
   localStorage.setItem(LIMIT_KEY, String(n));
+
+  /* 🔄 Firebase: publica o novo limite */
+  if (typeof fbGravarLimite === "function") {
+    fbGravarLimite(n).catch((err) => console.warn("Firebase (limite):", err.message));
+  }
+
   refreshStats();
   renderStudents();
 }
@@ -404,6 +427,12 @@ function removeStudent(id) {
   if (idx === -1) { alert("Registo não encontrado."); renderStudents(); return; }
   a.splice(idx, 1);
   saveStudents(a);
+
+  /* 🔄 Firebase: decrementa o contador */
+  if (typeof fbDecrementar === "function") {
+    fbDecrementar().catch((err) => console.warn("Firebase:", err.message));
+  }
+
   refreshStats();
   renderStudents();
 }
@@ -558,6 +587,11 @@ function setupCadastroForm() {
       data.criado_em = new Date().toISOString();
       latest.push(data);
       saveStudents(latest);
+
+      /* 🔄 Firebase: incrementa o contador global */
+      if (typeof fbIncrementar === "function") {
+        fbIncrementar().catch((err) => console.warn("Firebase:", err.message));
+      }
 
       const numero = String(latest.length).padStart(3, "0");
       const restam = Math.max(0, limit - latest.length);

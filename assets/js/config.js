@@ -7,11 +7,11 @@ window.COMUNIDADE_CONFIG = {
   /* ---------- Destinatários ---------- */
   destinatarios: {
     ceo: {
-      nome: "Elizandra Carlos Massango",
+      nome: "Elizandra Carla Massango",
       cargo: "CEO da Comunidade",
       whatsapp: "244922661537",
       callmebotKey: "",
-      email: ""
+      email: "massangoelizandramassango@gmail.com"
     },
     subceo: {
       nome: "Jorge Ernesto Lucala",
